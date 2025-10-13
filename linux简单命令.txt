@@ -4,7 +4,7 @@ cd命令
 
 示例：cd /home/username 切换到用户的家目录。
 
-ls
+ls命令
 
 用途：列出目录内容。
 
