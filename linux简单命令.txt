@@ -1,0 +1,226 @@
+cd
+
+用途：改变当前工作目录。
+
+示例：cd /home/username 切换到用户的家目录。
+
+ls
+
+用途：列出目录内容。
+
+示例：ls 列出当前目录的内容。
+
+ll 或 ls -l
+
+用途：以长格式列出目录内容，显示详细信息（如权限、所有者、大小、修改日期等）。
+
+示例：ls -l 列出当前目录内容的详细信息。
+
+mkdir
+
+用途：创建新目录。
+
+示例：mkdir newdir 创建一个名为newdir的新目录。
+mkdir -p mkdir/mwdir
+
+rm
+  
+用途：删除文件或目录。       rm -rf 强制删除
+
+示例：rm file.txt 删除名为file.txt的文件。rm -r dir 删除名为dir的目录及其内容。
+
+cp
+
+用途：复制文件或目录。
+
+示例：cp source.txt dest.txt 将source.txt复制为dest.txt。
+
+touch
+
+用途：创建一个空文件或更新文件的访问和修改时间。
+
+示例：touch newfile.txt 创建一个名为newfile.txt的空文件。
+
+pwd
+
+用途：显示当前工作目录的完整路径。
+
+示例：pwd 显示当前目录的路径。
+
+mv
+
+用途：移动或重命名文件或目录。
+
+示例：mv oldname.txt newname.txt 重命名文件。mv file.txt /path/to/destination/ 将文件移动到指定路径。
+
+vi 或 vim
+
+用途：文本编辑器，用于创建和修改文本文件。
+
+示例：vi filename.txt 打开或创建名为filename.txt的文件进行编辑。i进入编辑模式 esc退出编辑模式进入命令模式， 在vi中，常用的命令包括:w保存，:q退出，:wq保存并退出等。
+
+常用的tar命令
+
+(1)压缩和解压.tar.gz文件
+
+打包.tar.gz文件：tar -czvf mysql-5.7.tar.gz mysql
+
+解压.tar.gz文件到当前目录：tar -xzvf mysql-5.7.tar.gz
+
+解压.tar.gz文件到指定目录：tar -xzvf mysql-5.7.tar.gz -C /home/apps/software/
+
+
+
+
+
+
+
+防火墙
+
+systemctl status firewalld    #查看防火墙状态
+ 
+2、如何查看自己的防火墙属于 iptables 还是 firewalld
+运行命令：sudo firewall-cmd --state
+iptables防火墙,则会出现内容：
+iptables: Firewall is not running.
+iptables: Firewall is running.   
+firewalld 防火墙,则会出现内容：
+running
+2、永久关闭防火墙(通过命令)：
+1、对于 iptables 防火墙：
+sudo service iptables stop
+sudo chkconfig iptables off
+2、对于 firewalld 防火墙：
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
+
+3、永久关闭防火墙（通过配置文件）：
+1、对于 iptables 防火墙：
+然后将文件中的所有规则都删除，保存并退出文件。这将完全禁用 iptables 防火墙。
+
+sudo vi /etc/sysconfig/iptables
+ 
+AI写代码
+2、对于 firewalld 防火墙：
+在该文件中找到 Enabled 字段，并将其值从 yes 修改为 no。然后保存并退出文件。这将完全禁用 firewalld 防火墙
+
+sudo vi /etc/firewalld/firewalld.conf
+
+网卡
+重新启动命令
+service network restart
+
+切换用户
+su - username
+
+一、添加用户
+ 
+1、登录root 用户
+ 
+2、useradd xxx(用户名) 回车
+ 
+3、passwd xxx(上面输入的用户名) 回车 此项是设置密码
+ 
+4、#密码 回车
+ 
+用户组创建：
+sudo groupadd 组名 
+添加用户到组
+sudo usermod -aG 组名 用户名
+
+
+二、给该用户添加root权限
+ 为sudoers添加可写权限
+1、#chmod -v u+w /etc/sudoers 
+ 
+2、切换到root(#su),输入visudo,进入命令模式 注：vi 有两种模式 ：命令模式和编辑模式
+ 
+3、按Insert,进入编辑模式
+ 
+4、在 sudoers 文件添加新用户信息到 ## Allow root to run any commands anywhere 下，修改后的效果为
+ 
+      ## Allow root to run any commands anywher
+      root   ALL=(ALL)    ALL
+      xxx    ALL=(ALL)    ALL #xxx为新增用户
+ 
+5、保存：按Esc 后 输入 :wq 保存并退出
+6、取消 sudoers 文件可写权限     # chmod -v u-w /etc/sudoers
+
+
+1、备份默认的yum源
+#然后使用以下命令来安装 wget
+yum install wget
+
+#备份CentOS-Base.repo为CentOS-Base.repo.backup
+mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup 
+
+替换 CentOS-Base.repo  内容
+# CentOS-Base.repo
+#
+# The mirror system uses the connecting IP address of the client and the
+# update status of each mirror to pick mirrors that are updated to and
+# geographically close to the client.  You should use this for CentOS updates
+# unless you are manually picking other mirrors.
+#
+# If the mirrorlist= does not work for you, as a fall back you can try the 
+# remarked out baseurl= line instead.
+#
+#
+ 
+[base]
+name=CentOS-$releasever - Base
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/os/$basearch/
+#baseurl=http://vault.centos.org/7.9.2009/x86_64/os/
+baseurl=http://vault.centos.org/7.9.2009/os/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+ 
+#released updates 
+[updates]
+name=CentOS-$releasever - Updates
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/updates/$basearch/
+#baseurl=http://vault.centos.org/7.9.2009/x86_64/os/
+baseurl=http://vault.centos.org/7.9.2009/updates/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+ 
+#additional packages that may be useful
+[extras]
+name=CentOS-$releasever - Extras
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=extras&infra=$infra
+#$baseurl=http://mirror.centos.org/centos/$releasever/extras/$basearch/
+#baseurl=http://vault.centos.org/7.9.2009/x86_64/os/
+baseurl=http://vault.centos.org/7.9.2009/extras/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+ 
+#additional packages that extend functionality of existing packages
+[centosplus]
+name=CentOS-$releasever - Plus
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=centosplus&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/centosplus/$basearch/
+#baseurl=http://vault.centos.org/7.9.2009/x86_64/os/
+baseurl=http://vault.centos.org/7.9.2009/centosplus/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+-----------------------------------------------
+yum clean all #清理yum缓存
+yum makecache #重新生成新的yum缓存
+
+2、下载阿里云yum源
+curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+
+4、清理并重新生成yum缓存
+yum clean all #清理yum缓存
+yum makecache #重新生成新的yum缓存
+
+5、用新yum源升级包
+yum -y update
+检查yum的仓库列表
+yum repolist
+

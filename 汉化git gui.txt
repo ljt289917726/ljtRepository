@@ -1,0 +1,18 @@
+下载汉化包：
+访问 https://github.com/stayor/git-gui-zh 下载最新汉化文件
+或直接下载语言包文件：zh_cn.msg
+安装步骤：
+a) 找到 Git 安装目录（通常为 C:\Program Files\Git）
+b) 进入 \mingw64\share\git-gui\lib\msgs 目录
+c) 将下载的 zh_cn.msg 文件复制到该目录
+修改配置文件：
+编辑 .gitconfig 文件添加：
+[gui]
+language = zh_CN
+重启Git
+
+
+
+详细教程 改
+https://www.cnblogs.com/shangjun6/p/12127447.html
+
